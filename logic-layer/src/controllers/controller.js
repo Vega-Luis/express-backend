@@ -2,6 +2,7 @@ import { request } from 'express';
 import { Int, pool } from 'mssql';
 import { send } from 'process';
 import { getConnection } from '../database/connection'
+const sp_connection = require('../database/sp_connection')
 const path = require('path')
 
 export const invalidRoute = async (req, res) => {
@@ -9,6 +10,7 @@ export const invalidRoute = async (req, res) => {
 };
 
 export const showLogin = async (req, res) => {
+    const existUser = sp_connection.checkUser()
     res.send('Showing login page');
    //res.sendFile(path.join(__dirname, '../../../interface-layer/src/index.html'));
 }
@@ -37,25 +39,6 @@ export const insert = async (req, res) => {
     res.send("Sending insert data")
 };
 export const getUserCredentials = async (req, res) => {
-    /*const pool = await getConnection();
-    const result = await pool.request()
-    .input('inUserName', 'Juan')
-    .input('inPassword', 'j123')
-    .output('OutStatus', 0)
-    .output('OutResult', 0)
-    .execute('CheckUser');
-    console.log(result);*/
     res.json('Hola')
 
 }; 
-
-export const checkUserCrendentials = async (req, res) => {
-
-    req.on('data', function(data) {
-    })
-    .on ('end', function () {
-    })
-        
-    //res.sendFile(path.join(__dirname, '../../../interface-layer/src/query.html'))
-    //res.sendFile(path.join(__dirname, '../../../interface-layer/src/index.html'));
-};

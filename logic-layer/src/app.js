@@ -10,6 +10,14 @@ app.set('port', config.port)
 //middlewares
 app.use(morgan('dev'));
 app.use(express.json());
+const session = require('express-session')
+//middleware session
+app.use(session({
+    secret: 'secreted',
+    resave: true,
+    saveUninitialized: true
+
+}));
 //routes
 app.use(userRoutes)
 
