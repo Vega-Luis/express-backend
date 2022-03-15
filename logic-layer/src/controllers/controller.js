@@ -4,70 +4,67 @@ import { send } from 'process';
 import { getConnection } from '../database/connection'
 const path = require('path')
 
-export const invalidRoute = async (req, res) => {
-    res.send('Error 404 page not found')
-};
-
-export const showLogin = async (req, res) => {
-    res.send('Showing login page');
-   //res.sendFile(path.join(__dirname, '../../../interface-layer/src/index.html'));
-}
-
 export const login = async (req, res) => {
     const pool = await getConnection();
     const result = await pool.request()
-        .input('inUserName', 'Juan')
-        .input('inPassword', 'j123')
+        .input('inUserName', req.body.userName)
+        .input('inPassword', req.body.password)
         .output('OutStatus', 0)
         .output('OutResult', 0)
         .execute('CheckUser');
-    console.log(result);
-    res.send('Sending data for login')
-    return result;
-};
-
-export const getAllArticles = async (req, res) => {
-    res.send("Showing all articles")
+    
+        if (result.output.OutStatus == 1) {
+        res.json({
+            access: true
+        })
+    } else {
+        res.json({
+            access: false
+        })
+    }
 };
 
 export const consultByPattern  = async (req, res) => {
     const pool = await getConnection();
     const result = await pool.request()
-        .input('inName', 'a')
+        .input('inName', req.body.pattern)
         .output('outResult', 0)
         .execute('FilterByName');
-    console.log(result);
-    res.send("Showing pattern search result")
+    console.log(result.recordset);
+    res.json(result.recordset)
    // return result;
 };
 
 export const consultByAmount = async (req, res) => {
+    console.log(req.body);
     const pool = await getConnection();
     const result = await pool.request()
-        .input('inAmount', 10)
+        .input('inAmount', req.body.rowAmount)
         .output('outResult', 0)
         .execute('FilterTopAmount');
-    console.log(result);
+    console.log(result.recordset);
 
-    res.send("Showing amount search result")
-};
-
-export const showInsert = async (req, res) => {
-    
-    res.send("Showing insert page")
+    res.json(result.recordset)
 };
 
 export const insert = async (req, res) => {
+    console.log(req.body)
     const pool = await getConnection();
     const result = await pool.request()
-        .input('inName', 'new')
-        .input('inPrice', 100)
+        .input('inName', req.body.name)
+        .input('inPrice', req.body.price)
         .output('outResult', 0)
         .execute('InsertArticle');
-    console.log(result);
-    res.send("Sending insert data")
-};
-export const getUserCredentials = async (req, res) => {
-    res.json('Hola')
+    console.log(result.output.outResult);
 
-}; 
+    if (result.output.outResult == 0) {
+        console.log("enter")
+        res.json({
+            access: true
+        })
+    } else {
+        res.json({
+            access : false 
+        })
+    }
+};
