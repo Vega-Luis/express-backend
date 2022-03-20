@@ -1,15 +1,16 @@
 import express from 'express'
 import config from './config'
 import userRoutes from './routes/routes'
-
 const morgan = require('morgan');
 const app = express()
-const path = require('path')
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const errorMiddleware = require('./middleware/errors');
+const validations = require('.//middleware/validations')
 
 //settings
 app.set('port', config.port)
+
 //middlewares
 var corsOptions = {
     origin: '*',
@@ -18,20 +19,14 @@ var corsOptions = {
 
 app.use(cors(corsOptions))
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
-const session = require('express-session')
-//middleware session
-app.use(session({
-    secret: 'secreted',
-    resave: true,
-    saveUninitialized: true
-
-}));
 //routes
-app.use(userRoutes)
 
-// Static files
-app.use(express.static(path.join(__dirname, '../../interface-layer/src/public')))
+app.use('/login', validations.userCrendentialsValidation)
+app.use('/consult_by_amount', validations.consultByAmountValidation)
+app.use('/insert', validations.insertValidation)
+app.use(userRoutes)
+app.use(errorMiddleware.middleware);
 
 export default app

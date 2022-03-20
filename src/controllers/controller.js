@@ -2,29 +2,34 @@ import { request } from 'express';
 import { Int, pool } from 'mssql';
 import { send } from 'process';
 import { getConnection } from '../database/connection'
-const path = require('path')
+const jwt = require('jsonwebtoken')
 
 export const login = async (req, res) => {
+
     const pool = await getConnection();
+
     const result = await pool.request()
         .input('inUserName', req.body.userName)
         .input('inPassword', req.body.password)
         .output('OutStatus', 0)
         .output('OutResult', 0)
         .execute('CheckUser');
-    
-        if (result.output.OutStatus == 1) {
-        res.json({
-            access: true
-        })
-    } else {
-        res.json({
-            access: false
-        })
-    }
+    //if (result.output.OutStatus == 1) {
+    ////create token
+    //const token = jwt.sign(
+    //{ user_id: req.body.userName },
+    //process.env.TOKEN_KEY,
+    //{
+    //expiresIn: "0.25h",
+    //}
+    //);
+    ////save token
+    //res.status(200).json(user);
+    //}
+    res.status(400).send("Invalid credentials")
 };
 
-export const consultByPattern  = async (req, res) => {
+export const consultByPattern = async (req, res) => {
     const pool = await getConnection();
     const result = await pool.request()
         .input('inName', req.body.pattern)
@@ -32,7 +37,7 @@ export const consultByPattern  = async (req, res) => {
         .execute('FilterByName');
     console.log(result.recordset);
     res.json(result.recordset)
-   // return result;
+    // return result;
 };
 
 export const consultByAmount = async (req, res) => {
@@ -64,7 +69,7 @@ export const insert = async (req, res) => {
         })
     } else {
         res.json({
-            access : false 
+            access: false
         })
     }
 };

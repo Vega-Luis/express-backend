@@ -1,5 +1,4 @@
 import {Router} from 'express'
-//import {checkUserCrendentials, getUserCredentials, foo, login} from '../controllers/controller'
 const controller = require('../controllers/controller')
 const router = Router();
 
