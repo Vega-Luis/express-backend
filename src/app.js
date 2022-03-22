@@ -7,11 +7,11 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const errorMiddleware = require('./middleware/errors');
 const validations = require('.//middleware/validations')
-
+const auth = require('./middleware/auth')
 //settings
 app.set('port', config.port)
 
-//middlewares
+//middleware
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200
